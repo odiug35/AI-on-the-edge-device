@@ -172,15 +172,6 @@ extern "C" void app_main(void)
     CheckOTAUpdate();
 
     LogFile.CreateLogDirectories();
-/*
-    int mk_ret = mkdir("/sdcard/new_fd_mkdir", 0775);
-    ESP_LOGI(TAG, "mkdir ret %d", mk_ret);
-    mk_ret = mkdir("/sdcard/new_fd_mkdir/test", 0775);
-    ESP_LOGI(TAG, "mkdir ret %d", mk_ret);
-    MakeDir("/sdcard/test2");
-    MakeDir("/sdcard/test2/intern");
-*/
-
 
     char *ssid = NULL, *passwd = NULL, *hostname = NULL, *ip = NULL, *gateway = NULL, *netmask = NULL, *dns = NULL;
     LoadWlanFromFile("/sdcard/wlan.ini", ssid, passwd, hostname, ip, gateway, netmask, dns);

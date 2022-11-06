@@ -919,7 +919,7 @@ std::string unzip_new(std::string _in_zip_file, std::string _target_zip, std::st
     status = mz_zip_reader_init_file(&zip_archive, _in_zip_file.c_str(), 0);
     if (!status)
     {
-        ESP_LOGD(TAG, "mz_zip_reader_init_file() failed!");
+        LogFile.WriteToFile(ESP_LOG_ERROR, TAG, "mz_zip_reader_init_file() failed!");
         return ret;
     }
 
@@ -931,7 +931,7 @@ std::string unzip_new(std::string _in_zip_file, std::string _target_zip, std::st
         status = mz_zip_reader_init_file(&zip_archive, _in_zip_file.c_str(), sort_iter ? MZ_ZIP_FLAG_DO_NOT_SORT_CENTRAL_DIRECTORY : 0);
         if (!status)
         {
-            ESP_LOGD(TAG, "mz_zip_reader_init_file() failed!");
+            LogFile.WriteToFile(ESP_LOG_ERROR, TAG, "mz_zip_reader_init_file() failed!");
             return ret;
         }
 
@@ -946,7 +946,8 @@ std::string unzip_new(std::string _in_zip_file, std::string _target_zip, std::st
             p = mz_zip_reader_extract_file_to_heap(&zip_archive, archive_filename, &uncomp_size, 0);
                 if (!p)
                 {
-                    ESP_LOGE(TAG, "mz_zip_reader_extract_file_to_heap() failed on file %s", archive_filename);
+                    string zw = "mz_zip_reader_extract_file_to_heap() failed on file " + string(archive_filename);
+                    LogFile.WriteToFile(ESP_LOG_ERROR, TAG, zw);
                     mz_zip_reader_end(&zip_archive);
                     return ret;
                 }
@@ -994,24 +995,33 @@ std::string unzip_new(std::string _in_zip_file, std::string _target_zip, std::st
                 else
                 {
                     isokay = false;
-                    ESP_LOGD(TAG, "ERROR in writting extracted file (function fwrite) extracted file \"%s\", size %u", archive_filename, (uint)uncomp_size);
+                    string zw = "ERROR in writting extracted file (function fwrite) extracted file \"" + string(archive_filename) + "\", size " + to_string(uncomp_size);
+                    LogFile.WriteToFile(ESP_LOG_ERROR, TAG, zw);
                 }
 
                 DeleteFile(zw);
                 if (!isokay)
-                    ESP_LOGE(TAG, "ERROR in fwrite \"%s\", size %u", archive_filename, (uint)uncomp_size);
+                {
+                    string zw = "ERROR in fwrite \"" + string(archive_filename) + "\", size " + to_string(uncomp_size);
+                    LogFile.WriteToFile(ESP_LOG_ERROR, TAG, zw);
+                }
                 isokay = isokay && RenameFile(filename_zw, zw);
                 if (!isokay)
-                    ESP_LOGE(TAG, "ERROR in Rename \"%s\" to \"%s\"", filename_zw.c_str(), zw.c_str());
-//                isokay = isokay && DeleteFile(filename_zw);
-//                if (!isokay)
-//                    ESP_LOGE(TAG, "ERROR in Delete \"%s\"", filename_zw.c_str());
+                {
+                    string zw = "ERROR in Rename \"" + filename_zw + "\" to \"" + zw + "\"";
+                    LogFile.WriteToFile(ESP_LOG_ERROR, TAG, zw);
+                }
+
 
                 if (isokay)
-                    ESP_LOGI(TAG, "Successfully extracted file \"%s\", size %u", archive_filename, (uint)uncomp_size);
+                {
+                    string zw = "Successfully extracted file \"" + string(archive_filename) + "\"" + ", size " + to_string(uncomp_size);
+                    LogFile.WriteToFile(ESP_LOG_INFO, TAG, zw);
+                }
                 else
                 {
-                    ESP_LOGE(TAG, "ERROR in extracting file \"%s\", size %u", archive_filename, (uint)uncomp_size);
+                    string zw = "ERROR in extracting file \"" + string(archive_filename) + "\"" + ", size " + to_string(uncomp_size);
+                    LogFile.WriteToFile(ESP_LOG_ERROR, TAG, zw);
                     ret = "ERROR";
                 }
                 mz_free(p);
@@ -1022,7 +1032,7 @@ std::string unzip_new(std::string _in_zip_file, std::string _target_zip, std::st
         mz_zip_reader_end(&zip_archive);
     }
 
-    ESP_LOGD(TAG, "Success.");
+    ESP_LOGD(TAG, "Success unzip.");
     return ret;
 }
 
