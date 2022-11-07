@@ -1012,7 +1012,7 @@ std::string unzip_new(std::string _in_zip_file, std::string _target_zip, std::st
                 else
                 {
                     ESP_LOGE(TAG, "ERROR in extracting file \"%s\", size %u", archive_filename, (uint)uncomp_size);
-                    ret = "ERROR";
+                    ret = "error";
                 }
                 mz_free(p);
             }

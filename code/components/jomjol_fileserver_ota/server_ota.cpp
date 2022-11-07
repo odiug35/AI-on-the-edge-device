@@ -332,7 +332,7 @@ esp_err_t handler_ota_update(httpd_req_t *req)
     {
         ESP_LOGD(TAG, "Start empty directory /firmware");
         delete_all_in_directory("/sdcard/firmware");
-        std::string zw = "firmware directory deleted - v2\n";
+        std::string zw = "ok - firmware directory deleted\n";
         ESP_LOGD(TAG, "%s", zw.c_str());
         printf("Ausgabe: %s\n", zw.c_str());
     
@@ -379,6 +379,14 @@ esp_err_t handler_ota_update(httpd_req_t *req)
             outbin = "/sdcard/firmware";
 
             retfirmware = unzip_new(fn, out+"/", outbin+"/");
+
+            if (retfirmware == "error")
+            {
+                zw = "Error during unpacking of zip-file!\nPlease reload page and try again.\n";
+                httpd_resp_sendstr_chunk(req, zw.c_str());
+                httpd_resp_sendstr_chunk(req, NULL);  
+                return ESP_OK;        
+            }
 
             if (retfirmware.length() > 0)
             {
