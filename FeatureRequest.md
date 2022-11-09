@@ -8,8 +8,10 @@
    I will support and help where ever I can!
    
    
-
 ____
+
+Is it possible to connect and select an external LED as a flash? I have too many problems with reflections. (I hope this is the right place to edit XD
+
 
 #### ~~#29 Add favicon and use the hostname for the website~~- implemented v11.3.1
 
